@@ -1,12 +1,15 @@
 # -- coding: UTF-8 --
 import os
 
+f1_name="user1.txt"
+
 def test1():
 	f2=open("1_invite_uid.txt","w+")
-	with open('user1.txt', 'r') as f1:
+	with open(f1_name, 'r') as f1:
 		for i in f1:
-			#print "i is: ",i,
-			f2.write("select count(*) from fa_user where invite_uid=%s\n"%i)
+			i=i.strip("\n")
+			f2.write("select count(*) from fa_user where invite_uid=%s;"%i)
+			f2.write("select id,invite_uid,score,total_score from fa_user where id=%s\n"%i)
 	f2.close()
 	f1.close()
 
@@ -14,23 +17,20 @@ def test1():
 def test2(uid,invite_num,src_score,score):
 	after_score=src_score+score
 	f_name="3_sql_user_score_log_%s.txt"%uid
-	print(f_name)
-	f3=open(f_name,"w+")
+	f2=open(f_name,"w+")
 	for i in range(invite_num):
-		f3.write('INSERT INTO fa_user_score_log (uid, score, flag, before, after, addtime, remark, type) VALUES (%s, %s, +, %s, %s, 1531312626, 邀请好友注册得积分, offline);\n'%(uid,score,src_score,after_score))
+		f2.write('INSERT INTO fa_user_score_log (uid, score, flag, before, after, addtime, remark, type)\
+ 					VALUES (%s, %s, +, %s, %s, 1531312626, 邀请好友注册得积分, offline);\n'%(uid,score,src_score,after_score))
 		src_score=after_score
 		after_score+=score
-	f3.close()
-	del f_name
+	f2.close()
 
 def test3(invite_num,src_score,score):
 	f1=open("2_test2_fun_tmp.txt","w+")
-	with open('u.txt', 'r') as f2:
-	# with open('user1.txt', 'r') as f2:
+	with open(f1_name, 'r') as f2:
 		for i in f2:
 			print i,
 			f1.write("test2(%s,%s,%s,%s)\n"%(i.strip("\n"),invite_num,src_score,score))
-			#test2(i.strip("\n"),invite_num,src_score,score)
 	f2.close()
 	f1.close()
 
